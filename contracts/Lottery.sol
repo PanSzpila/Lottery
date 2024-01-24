@@ -14,7 +14,7 @@ contract Lottery {
         players.push(msg.sender);
     }
 
-    function random() private view returns (uint) {
+    function random() private view returns (uint256) {
         return uint(keccak256(block.difficulty, now, players));
     }
 
@@ -33,3 +33,4 @@ contract Lottery {
     function getPlayers() public view returns (address[]) {
         return  players;
     }
+}
