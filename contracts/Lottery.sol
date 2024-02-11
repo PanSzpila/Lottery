@@ -1,28 +1,28 @@
-pragma solidity ^0.4.17;
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.24;
 
 contract Lottery {
     address public manager;
-    address[] public players;
+    address payable[] public players;
 
-    function Lottery() public {
+    constructor () {
         manager = msg.sender;
     }
 
     function enter() public payable {
         require(msg.value >= .001 ether);
-
-        players.push(msg.sender);
+        players.push(payable(msg.sender));
     }
 
-    function random() private view returns (uint256) {
-        return uint(keccak256(block.difficulty, now, players));
+    function random() private view returns (uint) {
+        return uint(keccak256(abi.encodePacked(block.prevrandao, block.timestamp, players)));
     }
 
     function pickWinner() public onlyToManager {
 
         uint i = random() % players.length;
-        players[i].transfer(this.balance);
-        players = new address[](0);
+        players[i].transfer(address(this).balance);
+        players = new address payable[](0);
     }
 
     modifier onlyToManager() {
@@ -30,7 +30,7 @@ contract Lottery {
         _;
     }
 
-    function getPlayers() public view returns (address[]) {
+    function getPlayers() public view returns (address payable[] memory) {
         return  players;
     }
 }

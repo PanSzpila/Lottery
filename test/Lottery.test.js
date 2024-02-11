@@ -2,7 +2,7 @@ import assert from "assert";
 import ganache from "ganache";
 import { beforeEach, it } from "mocha";
 import { Web3 } from "web3";
-import { abiInterface, bytecode } from "../compile.js";
+import { abi, evm } from "../compile.js";
 
 const web3 = new Web3(ganache.provider());
 
@@ -12,8 +12,8 @@ let accounts;
 beforeEach(async () => {
   accounts = await web3.eth.getAccounts();
 
-  lottery = await new web3.eth.Contract(JSON.parse(abiInterface))
-    .deploy({ data: bytecode })
+  lottery = await new web3.eth.Contract(abi)
+    .deploy({ data: evm.bytecode.object })
     .send({ from: accounts[0], gas: 1000000 });
 });
 

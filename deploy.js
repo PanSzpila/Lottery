@@ -2,7 +2,7 @@
 
 import HDWalletProvider from "@truffle/hdwallet-provider";
 import { Web3 } from "web3";
-import { abiInterface, bytecode } from "./compile.js";
+import { abi, evm } from "./compile.js";
 
 const provider = new HDWalletProvider(
   process.env.ACCOUNT_SRP,
@@ -15,11 +15,11 @@ const deploy = async () => {
 
   console.log("Attempting to deploy from account", accounts[0]);
 
-  const result = await new web3.eth.Contract(JSON.parse(abiInterface))
-    .deploy({ data: bytecode })
+  const result = await new web3.eth.Contract(abi)
+    .deploy({ data: evm.bytecode.object })
     .send({ gas: "1000000", from: accounts[0] });
 
-  console.log(abiInterface);
+  console.log(JSON.stringify(abi));
   console.log("Contract deployed to", result.options.address);
   provider.engine.stop();
 };
